@@ -1,6 +1,9 @@
 const mapImage = new Image();
 mapImage.src = "./terrain.png";
 
+const playerImage = new Image();
+playerImage.src = "./player.png";
+
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
@@ -9,6 +12,7 @@ const canvas = canvasEl.getContext("2d");
 const socket = io();
 
 let map = [[]];
+let players = [];
 const TILE_SIZE = 16;
 
 socket.on("connected", () => {
@@ -19,7 +23,51 @@ socket.on("map", (loadedMap) => {
     map = loadedMap;
 });
 
+// MOVEMENT
+socket.on("players", (serverPlayers) => {
+    players = serverPlayers;
+});
 
+const inputs = {
+    'up': false,
+    'down': false,
+    'left': false,
+    'right': false
+}
+
+window.addEventListener('keydown', (e) => {
+    if(e.key === 'w'){
+        inputs["up"] = true;
+    } else if(e.key === 's'){
+        inputs["down"] = true;
+    }
+
+    if(e.key === 'd'){
+        inputs["right"] = true;
+    } else if(e.key === 'a'){
+        inputs["left"] = true;
+    }
+
+    socket.emit("inputs", inputs);
+});
+
+window.addEventListener('keyup', (e) => {
+    if(e.key === 'w'){
+        inputs["up"] = false;
+    } else if(e.key === 's'){
+        inputs["down"] = false;
+    }
+
+    if(e.key === 'd'){
+        inputs["right"] = false;
+    } else if(e.key === 'a'){
+        inputs["left"] = false;
+    }
+
+    socket.emit("inputs", inputs);
+});
+
+// game loop
 function loop(){
     canvas.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -45,6 +93,12 @@ function loop(){
                 );
         }
     }
+
+    // drawing player
+    for(const player of players) {
+        canvas.drawImage(playerImage, player.x, player.y);
+    }
+    
 
     window.requestAnimationFrame(loop);
 }
