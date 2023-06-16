@@ -18,9 +18,9 @@ let inputsMap = {};
 let ground2D, decal2D;
 
 // tick rate
-const SPEED = 10.01;
-const SNOWBALL_SPEED = 15.01;
-const TICK_RATE = 120;
+const SPEED = 20;
+const SNOWBALL_SPEED = 30;
+const TICK_RATE = 60;
 const PLAYER_SIZE = 80;
 const TILE_SIZE = 80;
 
@@ -96,9 +96,9 @@ function tick(delta){
             player.x = previousPlayerX;
         }
 
-        // linear interpolation
-        player.x = lerp(previousPlayerX, player.x, 1);
-        player.y = lerp(previousPlayerY, player.y, 1);
+        // // linear interpolation
+        // player.x = lerp(previousPlayerX, player.x, 1);
+        // player.y = lerp(previousPlayerY, player.y, 1);
     }
 
     // snowball movement

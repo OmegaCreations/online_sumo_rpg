@@ -34,7 +34,7 @@ $('#nickname').keypress(function (e) {
     if(key == 13)  // the enter key code
      {
        nickname = document.getElementById("nickname").value;
-       if(nickname.length < 3){
+       if(nickname.length < 4){
         alert("Nick has to be at least 4 characters.")
        } else {
         $('.content').css('display', 'none'); 
