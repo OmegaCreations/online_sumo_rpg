@@ -7,6 +7,7 @@ playerImage.src = "./player.png";
 
 const walk = new Audio('./walk2.mp3');
 
+
 // canvas
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
@@ -25,6 +26,23 @@ const TILE_SIZE = 5*16;
 socket.on("connected", () => {
     console.log("connected.");
 })
+
+// NICKNAME
+let nickname = document.getElementById("nickname").value;
+$('#nickname').keypress(function (e) {
+    var key = e.which;
+    if(key == 13)  // the enter key code
+     {
+       nickname = document.getElementById("nickname").value;
+       if(nickname.length < 3){
+        alert("Nick has to be at least 4 characters.")
+       } else {
+        $('.content').css('display', 'none'); 
+        socket.emit("nickname", nickname);   
+       }
+     }
+});   
+
 
 // Load map
 socket.on("map", (loadedMap) => {
@@ -88,6 +106,8 @@ window.addEventListener('keyup', (e) => {
 window.addEventListener('click', (e) => {
     const angle = Math.atan2(e.clientY - canvasEl.height/2, e.clientX - canvasEl.width/2);
     socket.emit("snowball", angle);
+    const snowball = new Audio('./snowball.mp3');
+    snowball.play();
 });
 
 // game loop
@@ -160,6 +180,13 @@ function loop(){
 
     // render player
     for(const player of players) {
+        // nickname
+        canvas.font = "20px Arial";
+        canvas.fillStyle = "grey"; 
+        canvas.textAlign = "center";
+        canvas.fillText(player.nickname, Math.round(player.x - true_cameraX) + 40, Math.round(player.y - true_cameraY) + 120);
+        canvas.strokeText(player.nickname, Math.round(player.x - true_cameraX) + 40, Math.round(player.y - true_cameraY) + 120);
+
         canvas.drawImage(playerImage, Math.round(player.x - true_cameraX), Math.round(player.y - true_cameraY));
     }
     
@@ -168,6 +195,7 @@ function loop(){
         canvas.fillStyle = "#FFF";
         canvas.beginPath();
         canvas.arc(snowball.x - cameraX, snowball.y - cameraY, 6, 0, 2* Math.PI);
+        canvas.stroke()
         canvas.fill();
     }
 

@@ -144,6 +144,7 @@ async function main(){
 
         players.push({
             id: socket.id,
+            nickname: socket.id,
             x: 40*80/2,
             y: 40*80/2,
         })
@@ -157,6 +158,12 @@ async function main(){
         // change movement inputs
         socket.on("inputs", (inputs) => {
             inputsMap[socket.id] = inputs;
+        });
+
+        // change nickname
+        socket.on("nickname", (nickname) => {
+            const player = players.find((player) => player.id === socket.id);
+            player.nickname = nickname;
         });
 
         // throw snowball
